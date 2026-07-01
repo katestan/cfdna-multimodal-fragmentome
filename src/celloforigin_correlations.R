@@ -17,8 +17,8 @@ proteinAtlas <- read.table(proteinAtlasfile, header=T,as.is=T,sep="\t")
 #batch corrected values are not normally distributed (perform log normalization)
 rownames(proteinAtlas) <- proteinAtlas$feature_id
 ndata <- proteinAtlas[,-1]
-logndata <- log2(ndata)
-dim(logndata)
+#logndata <- log2(ndata) #originally what snyder did as bulk rna-seq was not log transformed
+#dim(logndata)
 
 tLabels <- as.data.table(colnames(ndata))
 colnames(tLabels) <- c("RName")
@@ -35,9 +35,9 @@ fdata <- read.table(file_path, as.is=TRUE, sep="\t", header=TRUE, comment.char="
     colnames(fdata) <- sub("X","",colnames(fdata))
     rownames(fdata) <- fdata[,1]
     fdata <- fdata[,c(1,rev(c(2:dim(fdata)[2])))]
-    logndata2 <- logndata[fdata[,1],]
+    ndata2 <- ndata[fdata[,1],]
 
-res <- cor(rowMeans(fdata[,selFreq]),logndata2[,order(names(logndata2))],use="pairwise.complete.obs")
+res <- cor(rowMeans(fdata[,selFreq]),ndata2[,order(names(ndata2))],use="pairwise.complete.obs")
     res.df <- as.data.frame(t(res))
     colnames(res.df) <- c("correlation")
     res.df$RName <- rownames(res.df)
